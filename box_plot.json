@@ -1,0 +1,57 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "description": "FIFA Players: Age vs Overall Rating",
+    "data": {
+      "url": "https://raw.githubusercontent.com/jypang11/Datasets/refs/heads/main/fifa_players.csv",
+      "format": {"type": "csv"}
+    },
+    "transform": [
+      {"window": [{"op": "rank", "as": "rank"}], "sort": [{"field": "overall_rating", "order": "descending"}]},
+      {"filter": "datum.rank <= 20"}
+    ],
+    "params": [
+      {
+        "name": "nationality_select",
+        "bind": {
+          "input": "select",
+          "options": ["Argentina", "Portugal", "Italy", "France", "Denmark", "Senegal"],
+          "name": "Select Nationality: "
+        },
+        "value": "Argentina"  
+      }
+    ],
+    "transform": [
+      {"filter": "datum.nationality == nationality_select"}
+    ],
+    "layer": [
+      {
+        "mark": "circle",
+        "encoding": {
+          "x": {"field": "age", "type": "quantitative", "title": "Age"},
+          "y": {"field": "overall_rating", "type": "quantitative", "title": "Overall Rating"},
+          "color": {"field": "nationality", "type": "nominal", "title": "Nationality"},
+          "tooltip": [
+            {"field": "name", "type": "nominal", "title": "Player", "format": ""},
+            {"field": "overall_rating", "type": "quantitative", "title": "Overall Rating", "format": ""},
+            {"field": "age", "type": "quantitative", "title": "Age", "format": ""},
+            {"field": "height_cm", "type": "quantitative", "title": "Height (cm)", "format": ".1f"},
+            {"field": "weight_kgs", "type": "quantitative", "title": "Weight (kgs)", "format": ".1f"}
+            ] 
+        }
+      },
+      {
+        "mark": {"type": "text", "align": "left", "dx": 7, "dy": -5, "fontSize": 12},
+        "encoding": {
+          "x": {"field": "age", "type": "quantitative"},
+          "y": {"field": "overall_rating", "type": "quantitative"},
+          "text": {"field": "name", "type": "nominal"}
+        },
+        "transform": [
+          {"filter": "(datum.name === 'L. Messi') || (datum.name === 'C. Ronaldo')"}
+        ]
+      }
+    ],
+    "width": 600,
+    "height": 400
+  }
+  
